@@ -6,10 +6,10 @@
 local RunService = game:GetService("RunService")
 
 local DestroyConnections = {} :: {[BasePart]: RBXScriptConnection}
-local Watchlist = table.create(10) :: {BasePart}
-local SteppedConnection: RBXScriptConnection
+local Watchlist = {} :: {BasePart}
+local WatcherConnection: RBXScriptConnection
 
-local function SteppedFunction()
+local function OnPreSimulation()
 	-- Iterate through forbidden parts and wake any that are attempting to sleep
 	for _, Part in Watchlist do
 		if Part.AssemblyLinearVelocity == Vector3.zero then
@@ -39,8 +39,8 @@ local function AllowSleep(Part: BasePart)
 	end
 
 	-- Stop our watcher if we no longer need it
-	if #Watchlist < 1 and SteppedConnection then
-		SteppedConnection:Disconnect()
+	if #Watchlist < 1 and WatcherConnection then
+		WatcherConnection:Disconnect()
 	end
 end
 
@@ -51,16 +51,16 @@ local function ForbidSleep(Part: BasePart)
 	end
 
 	-- Add part to watchlist
-	Watchlist[#Watchlist + 1] = Part
+	table.insert(Watchlist, Part)
 
 	-- Start our watcher if we haven't yet
-	if not SteppedConnection then
-		SteppedConnection = RunService.Stepped:Connect(SteppedFunction)
+	if not WatcherConnection then
+		WatcherConnection = RunService.PreSimulation:Connect(OnPreSimulation)
 	end
 
 	-- Create a destroy watcher if one doesn't exist
 	if not DestroyConnections[Part] then
-		DestroyConnections[Part] = Part.Destroying:Once(function()
+		DestroyConnections[Part] = Part.Destroying:Connect(function()
 			AllowSleep(Part)
 		end)
 	end
@@ -90,9 +90,9 @@ local function AllowAllSleep()
 	table.clear(Watchlist)
 
 	-- Stop our watcher as we no longer need it
-	if SteppedConnection then
-		SteppedConnection:Disconnect()
-		SteppedConnection = nil
+	if WatcherConnection then
+		WatcherConnection:Disconnect()
+		WatcherConnection = nil
 	end
 
 	-- Clear destroy connections
