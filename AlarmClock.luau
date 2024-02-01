@@ -12,8 +12,8 @@ local WatcherConnection: RBXScriptConnection
 local function OnPreSimulation()
 	-- Iterate through forbidden parts and wake any that are attempting to sleep
 	for _, Part in Watchlist do
-		if Part.AssemblyLinearVelocity == Vector3.zero then
-			Part.AssemblyLinearVelocity = Vector3.new(0,-0.08,0)
+		if Part.Velocity == Vector3.zero then
+			Part.Velocity = Vector3.new(0,-0.08,0)
 		end
 	end
 end
