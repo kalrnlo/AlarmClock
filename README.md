@@ -17,28 +17,33 @@ https://devforum.roblox.com/t/duration-based-part-awakening/1085506
 
 ## The Solution
 
-To keep parts awake at minimal performance cost, I determined that the best way is to softly push the object towards the ground. We only push it when the Velocity is 0,0,0 as any other velocity means it must already be awake. We push it gently down, because if it's asleep then it must be resting on something so a downward velocity has almost no risk of actually causing the part to move- just wakes it up. This method is used in production environments by BanTech, EgoMoose, Firebrand1, and more, so I know it works well and has been battle tested.
+To keep parts awake at minimal performance cost, I determined that the best way is to softly push the object towards the ground. We only push it when the AssemblyLinearVelocity is 0,0,0 as any other velocity means it must already be awake. We push it gently down, because if it's asleep then it must be resting on something so a downward velocity has almost no risk of actually causing the part to move- just wakes it up. This method is used in production environments by BanTech, EgoMoose, Firebrand1, and more, so I know it works well and has been battle tested.
 
 --------
 
 ## The API
 
 ```Lua
-function AlarmClock:ForbidSleep(Part)
+function AlarmClock.Forbid(Part)
 ```
 Keeps the given Part awake at all times.
 
 ```Lua
-function AlarmClock:ForbidSleepForDuration(Part, Duration)
+function AlarmClock.ForbidForDuration(Part, Duration)
 ```
 Keeps the given Part awake for the given Duration.
 
 ```Lua
-function AlarmClock:AllowSleep(Part)
+function AlarmClock.Allow(Part)
 ```
 Allows the given Part to fall asleep (aka removing it from our forbidden list).
 
 ```Lua
-function AlarmClock:AllowAllSleep()
+function AlarmClock.AllowAll()
 ```
 Allows all our currently forbidden parts to fall asleep (aka clearing our forbidden list).
+
+```Lua
+AlarmClock.Watchlist
+```
+List of all parts currently being watched (Warning: This list is used by the module internally and isnt a copy)
