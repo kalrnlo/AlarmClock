@@ -1,5 +1,5 @@
 --[=[
-	AlarmClock by boatbomber
+	AlarmClock by boatbomber, modified by kalrnlo
 	03/02/2024 | Distributed under MIT License
 --]=]
 
