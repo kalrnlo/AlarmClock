@@ -21,29 +21,32 @@ To keep parts awake at minimal performance cost, I determined that the best way 
 
 --------
 
-## The API
+## API
 
 ```Lua
-function AlarmClock.Forbid(Part)
+function AlarmClock.Forbid(Part: BasePart) -> boolean
 ```
 Keeps the given Part awake at all times.
+Returns a boolean indicating if the part was forbidden or not.
 
 ```Lua
-function AlarmClock.ForbidForDuration(Part, Duration)
+function AlarmClock.ForbidForDuration(Part: BasePart, Duration: number?) -> thread?
 ```
-Keeps the given Part awake for the given Duration.
+Keeps the given Part awake for the given Duration. If no duration is given it just forbids the given part until the next frame.
+Returns the thread it created to keep the part awake if the part could be forbidden.
 
 ```Lua
-function AlarmClock.Allow(Part)
+function AlarmClock.Allow(Part: BasePart) -> boolean
 ```
 Allows the given Part to fall asleep (aka removing it from our forbidden list).
 
 ```Lua
-function AlarmClock.AllowAll()
+function AlarmClock.AllowAll() -> void
 ```
-Allows all our currently forbidden parts to fall asleep (aka clearing our forbidden list).
+Allows all our currently forbidden parts to fall asleep 
+(aka clearing our forbidden list, cleaning up instances, and disconnecting RBXScriptConnections made).
 
 ```Lua
-AlarmClock.Watchlist
+AlarmClock.Watchlist {BasePart}
 ```
 List of all parts currently being watched (Warning: This list is used by the module internally and isnt a copy)
