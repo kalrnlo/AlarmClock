@@ -118,7 +118,7 @@ local function InternalAllow(Part: BasePart, Index: number)
 	end
 
 	-- Cleanup as we arent watching any parts
-	if #Watchlist == 0  then
+	if #Watchlist == 0 then
 		AllowAll()
 	end
 end						
@@ -186,7 +186,7 @@ end
 local function ForbidForDuration(Part: BasePart, Duration: number?): thread?
 	if CanBeForbidden(Part) then
 		if Duration then 
-			return task.spawn(function()
+			return task.spawn(function(Part, Duration)
 				local Start = os.clock()
 
 				InternalForbid(Part)
