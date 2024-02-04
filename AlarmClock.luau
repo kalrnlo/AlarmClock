@@ -217,6 +217,7 @@ end
 			
 local AlarmClock = {
 	ForbidForDuration = ForbidForDuration,
+	CanBeForbidden = CanBeForbidden,
 	Watchlist = Watchlist,
 	AllowAll = AllowAll,
 	Forbid = Forbid,
