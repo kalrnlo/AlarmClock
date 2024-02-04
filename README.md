@@ -36,6 +36,11 @@ Keeps the given Part awake for the given Duration. If no duration is given it ju
 Returns the thread it created to keep the part awake if the part could be forbidden.
 
 ```Lua
+function AlarmClock.CanBeForbidden(Part: BasePart) -> boolean
+```
+Returns a boolean indicating if the provided part can be forbidden from sleep or not.
+
+```Lua
 function AlarmClock.Allow(Part: BasePart) -> boolean
 ```
 Allows the given Part to fall asleep (aka removing it from our forbidden list).
