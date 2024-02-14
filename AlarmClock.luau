@@ -61,7 +61,7 @@ local function WriteVector(Index: number, Vector: Vector3)
 		Vectors = NewVectors
 	end
 
-	buffer.writef32(Vectors, Offset, Vector.X),
+	buffer.writef32(Vectors, Offset, Vector.X)
 	buffer.writef32(Vectors, Offset + 5, Vector.Y)
 	buffer.writef32(Vectors, Offset + 10, Vector.Z)
 end
@@ -73,7 +73,7 @@ local function ReadVector(Index: number)
 	return Vector3.new(
 		buffer.readf32(Vectors, Offset),
 		buffer.readf32(Vectors, Offset + 5),
-		buffer.readf32(Vectors, Offset + 10),
+		buffer.readf32(Vectors, Offset + 10)
 	)
 end
 
@@ -135,7 +135,6 @@ local function OnPreSimulation()
 			InternalAllow(Part, Index)
 			continue
 		end
-		local PreviousPosition = ReadVector(Index)
 		local CurrentPosition = Part.Position
 		WriteVector(Index, CurrentPosition)
 								
@@ -143,7 +142,7 @@ local function OnPreSimulation()
 			if Part.AssemblyLinearVelocity == Vector3.zero then
 				Part.AssemblyLinearVelocity = PushVelocity
 			end
-		elseif (ReadVector(Index) - CurrentPosition):FuzzyEq(Vector3.zero) then
+		elseif (ReadVector(Index) - CurrentPosition):FuzzyEq(Vector3.zero, 5) then
 			-- AssemblyLinearVelocity doesnt replicate, so we are getting the diffrence between
 			-- the previous & current position and seeing if its close to Vector3.zero
 			-- suggesting that theres been no movement and its probably asleep
@@ -164,14 +163,18 @@ local function InternalForbid(Part: BasePart)
 		WatcherConnection = RunService.PreSimulation:Connect(OnPreSimulation)
 	end
 	if not Attachment then
-		Attachment = Instance.new("Attachment")
-		Attachment.Name = "AlarmClock_Attachment"
+		local NewAttachment = Instance.new("Attachment")
+		NewAttachment.Name = "AlarmClock_Attachment"
+
+        Attachment = NewAttachment
 	end
 	if not LinearVelocity then
-		LinearVelocity = Instance.new("LinearVelocity")
-		LinearVelocity.RelativeTo = Enum.ActuatorRelativeTo.World
-		LinearVelocity.Name = "AlarmClock_LinearVelocity"
-		LinearVelocity.Attachment0 = Attachment
+		local NewLinearVelocity = Instance.new("LinearVelocity")
+		NewLinearVelocity.RelativeTo = Enum.ActuatorRelativeTo.World
+		NewLinearVelocity.Name = "AlarmClock_LinearVelocity"
+		NewLinearVelocity.Attachment0 = Attachment
+
+        LinearVelocity = NewLinearVelocity
 	end		
 end
 
@@ -179,7 +182,7 @@ local function Allow(Part: BasePart)
 	local PartIndex = table.find(Watchlist, Part)
 			
 	if PartIndex then
-		InternalAllow(Part, Index)
+		InternalAllow(Part, PartIndex)
 	end
 end
 
@@ -191,7 +194,7 @@ local function ForbidForDuration(Part: BasePart, Duration: number?): thread?
 
 				InternalForbid(Part)
 				-- Accurate wait the specified duration before allowing sleep
-				while os.clock() - Start =< Duration do
+				while os.clock() - Start <= Duration do
 					RunService.PostSimulation:Wait()
 				end
 
